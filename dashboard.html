@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Análisis Social - Café de Tere</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 20px; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: #5c6770; text-align: center; margin-bottom: 30px; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .card h3 { margin-top: 0; color: #007bff; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        .metric-value { font-size: 2em; font-weight: bold; color: #28a745; margin-top: 10px; }
+        .metric-label { font-size: 0.9em; color: #6c757d; }
+        .section-title { color: #5c6770; border-bottom: 2px solid #5c6770; padding-bottom: 5px; margin-top: 40px; margin-bottom: 20px; }
+        .topic-list { list-style: none; padding: 0; }
+        .topic-item { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 6px; background-color: #fff; }
+        .topic-item strong { color: #007bff; display: block; margin-bottom: 5px; font-size: 1.1em; }
+        .topic-item p { margin: 5px 0; font-size: 0.9em; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 0.9em; }
+        th { background-color: #e9ecef; color: #495057; }
+        .heatmap-container { overflow-x: auto; }
+        .heatmap table { min-width: 800px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard de Análisis de Comunicación Corporativa (Twitter)</h1>
+
+        <h2 class="section-title">Métricas de Resumen de Contenido y Audiencia</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3>Total de Mensajes Analizados</h3>
+                <div class="metric-value">1199</div>
+                <div class="metric-label">`id` (Conteo)</div>
+            </div>
+            <div class="card">
+                <h3>Promedio de Retweets</h3>
+                <div class="metric-value">33.93</div>
+                <div class="metric-label">`retweet_count` (Media)</div>
+            </div>
+            <div class="card">
+                <h3>Promedio de Likes</h3>
+                <div class="metric-value">12.20</div>
+                <div class="metric-label">`favorite_count` (Media)</div>
+            </div>
+            <div class="card">
+                <h3>Promedio de Seguidores del Usuario</h3>
+                <div class="metric-value">5,046</div>
+                <div class="metric-label">`user.followers_count` (Media)</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Correlaciones de Engagement</h2>
+        <div class="card-grid">
+            <div class="card">
+                <h3>Seguidores vs. Likes</h3>
+                <div class="metric-value" style="color: #ffc107;">0.374</div>
+                <div class="metric-label">Correlación moderada positiva. Los tweets de usuarios con más seguidores tienden a tener más likes.</div>
+            </div>
+            <div class="card">
+                <h3>Seguidores vs. Retweets</h3>
+                <div class="metric-value" style="color: #ffc107;">0.128</div>
+                <div class="metric-label">Correlación débil positiva. El tamaño de la audiencia no es el factor principal para ser retuiteado.</div>
+            </div>
+            <div class="card">
+                <h3>Likes vs. Retweets</h3>
+                <div class="metric-value" style="color: #28a745;">0.121</div>
+                <div class="metric-label">Correlación débil positiva. No hay un fuerte vínculo automático entre que un mensaje guste y que se comparta masivamente.</div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Engagement por Día y Hora (Retweets + Likes)</h2>
+        <div class="card heatmap-container">
+            <h3>Picos de Conversación (Valores totales)</h3>
+            <div class="heatmap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>00</th><th>01</th><th>02</th><th>03</th><th>04</th><th>05</th><th>06</th><th>07</th><th>08</th><th>09</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th><th>21</th><th>22</th><th>23</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><th>Lun</th>
+                            <td>-</td><td>0</td><td>-</td><td>0</td><td>-</td><td>-</td><td>-</td><td>0</td><td>-</td><td>0</td><td>-</td><td>0</td><td>-</td><td>-</td><td style="background-color: #f0f8ff;">1</td><td style="background-color: #f0f8ff;">1</td><td style="background-color: #add8e6;">3</td><td style="background-color: #87ceeb;">177</td><td>-</td><td>-</td><td>-</td><td>-</td><td style="background-color: #1e90ff; color: white;">2734</td><td style="background-color: #b0e0e6;">82</td>
+                        </tr>
+                        <tr><th>Mar</th>
+                            <td style="background-color: #f0f8ff;">1</td><td style="background-color: #b0e0e6;">32</td><td style="background-color: #b0e0e6;">20</td><td>0</td><td style="background-color: #add8e6;">3</td><td>-</td><td>-</td><td style="background-color: #f0f8ff;">1</td><td>-</td><td>0</td><td>-</td><td style="background-color: #f0f8ff;">1</td><td style="background-color: #add8e6;">3</td><td style="background-color: #87ceeb;">73</td><td style="background-color: #4682b4; color: white;">195</td><td style="background-color: #b0e0e6;">18</td><td style="background-color: #4682b4; color: white;">175</td><td style="background-color: #7b68ee;">102</td><td style="background-color: #000080; color: white;">1012</td><td style="background-color: #0000cd; color: white;">651</td><td style="background-color: #3cb371; color: white;">210</td><td style="background-color: #48d1cc; color: white;">412</td><td style="background-color: #00008b; color: white;">1555</td><td style="background-color: #0000cd; color: white;">1331</td>
+                        </tr>
+                        <tr><th>Mié</th>
+                            <td style="background-color: #3cb371; color: white;">209</td><td style="background-color: #0000cd; color: white;">906</td><td style="background-color: #000080; color: white;">1789</td><td style="background-color: #0000cd; color: white;">895</td><td style="background-color: #48d1cc; color: white;">265</td><td style="background-color: #b0e0e6;">37</td><td style="background-color: #b0e0e6;">27</td><td style="background-color: #b0e0e6;">31</td><td style="background-color: #b0e0e6;">37</td><td style="background-color: #add8e6;">4</td><td style="background-color: #add8e6;">12</td><td style="background-color: #87ceeb;">64</td><td style="background-color: #87ceeb;">46</td><td style="background-color: #7b68ee;">115</td><td style="background-color: #7b68ee;">98</td><td style="background-color: #87ceeb;">76</td><td style="background-color: #b0e0e6;">36</td><td style="background-color: #4682b4; color: white;">160</td><td style="background-color: #b0e0e6;">24</td><td style="background-color: #b0e0e6;">34</td><td style="background-color: #b0e0e6;">22</td><td style="background-color: #48d1cc; color: white;">282</td><td style="background-color: #87ceeb;">65</td><td style="background-color: #87ceeb;">83</td>
+                        </tr>
+                        <tr><th>Jue</th>
+                            <td style="background-color: #b0e0e6;">37</td><td style="background-color: #7b68ee;">104</td><td style="background-color: #b0e0e6;">40</td><td style="background-color: #add8e6;">10</td><td style="background-color: #add8e6;">15</td><td style="background-color: #add8e6;">8</td><td>0</td><td>0</td><td>-</td><td>0</td><td>0</td><td style="background-color: #f0f8ff;">1</td><td style="background-color: #add8e6;">17</td><td style="background-color: #add8e6;">5</td><td style="background-color: #f0f8ff;">1</td><td style="background-color: #add8e6;">3</td><td style="background-color: #87ceeb;">57</td><td style="background-color: #b0e0e6;">29</td><td style="background-color: #add8e6;">10</td><td style="background-color: #f0f8ff;">1</td><td style="background-color: #add8e6;">16</td><td style="background-color: #f0f8ff;">1</td><td style="background-color: #f0f8ff;">1</td><td style="background-color: #7b68ee;">100</td>
+                        </tr>
+                        <tr><th>Vie</th>
+                            <td style="background-color: #add8e6;">5</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td style="background-color: #add8e6;">8</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+                        </tr>
+                        <tr><th>Sáb</th>
+                            <td style="background-color: #add8e6;">5</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td style="background-color: #add8e6;">11</td><td>-</td><td>-</td><td>0</td><td>0</td><td style="background-color: #add8e6;">5</td><td style="background-color: #add8e6;">2</td><td style="background-color: #add8e6;">8</td><td>-</td><td>-</td><td>-</td><td>0</td><td>-</td><td>-</td>
+                        </tr>
+                        <tr><th>Dom</th>
+                            <td>-</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td style="background-color: #add8e6;">7</td><td>-</td><td>0</td><td>0</td><td>-</td><td style="background-color: #f0f8ff;">1</td><td>-</td><td>-</td><td>-</td><td>0</td><td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="font-size: 0.8em; margin-top: 10px; color: #dc3545;">*Los valores altos (colores oscuros) se concentran en Lunes 22h, Martes 18h-23h y Miércoles 01h-04h, indicando los picos de la conversación y el engagement.</p>
+        </div>
+
+        <h2 class="section-title">Tweets de Mayor Engagement (Ejemplos)</h2>
+        <div class="card">
+            <ul class="topic-list">
+                <li>
+                    <strong>Tweet con más Likes:</strong> La se\u00f1ora del caf\u00e9 d Tere es la prueba de q trabajando duro se puede llegar a rico...
+                    <p style="color: #6c757d;">Likes: 332.0, Retweets: 81.0, Total Engagement: 61.14</p>
+                </li>
+                 <li>
+                    <strong>Tweet con más Retweets:</strong> [Dirigido a un grupo de usuarios] @Cesar_Antonio_F @LivePalestina @Jou_Kaiser @tere_marinovic...
+                    <p style="color: #6c757d;">Likes: 10.0, Retweets: 1.0, Total Engagement: 250.0</p>
+                    <p style="font-size: 0.8em; color: #dc3545;">*Nota: El engagement total más alto puede estar influenciado por el algoritmo de cálculo.</p>
+                </li>
+            </ul>
+        </div>
+
+        <h2 class="section-title">Tópicos Clave de la Conversación y Retos de Comunicación</h2>
+        <div class="card">
+            <ul class="topic-list">
+                <li class="topic-item">
+                    <strong>Precio y percepción de valor</strong>
+                    <p><strong>Detalle:</strong> Fuerte polarización: para muchos es “caro/sobrevalorado”...</p>
+                    <p><strong>Reto de Comunicación:</strong> Hacer transparente la propuesta de valor y costos, y ofrecer beneficios (lealtad, horas felices) para mejorar la ecuación valor/precio.</p>
+                </li>
+                <li class="topic-item">
+                    <strong>Medios de pago</strong>
+                    <p><strong>Detalle:</strong> Reclamo recurrente por no aceptar tarjetas/datafast; fricción de usar solo efectivo; algunos declaran no volver por esta razón.</p>
+                    <p><strong>Reto de Comunicación:</strong> Habilitar POS, QR y billeteras; comunicar razones y fechas de implementación; incentivar pagos digitales...</p>
+                </li>
+                <li class="topic-item">
+                    <strong>Calidad y consistencia del producto</strong>
+                    <p><strong>Detalle:</strong> Opiniones dispares: “normalito”, “perdió sazón/industrializado”, tigrillo “sopudo/insípido”...</p>
+                    <p><strong>Reto de Comunicación:</strong> Refinar y estandarizar recetas y procesos... pilotos de receta “clásico criollo” vs “sello Tere” para reconciliar expectativas.</p>
+                </li>
+                <li class="topic-item">
+                    <strong>Gestión de reputación y polarización social</strong>
+                    <p><strong>Detalle:</strong> Conversación masiva “lovers vs haters” con connotaciones de clase...</p>
+                    <p><strong>Reto de Comunicación:</strong> Protocolo de respuesta empática, contenidos que celebren inclusión y trabajo, voceros creíbles y activaciones que desactiven antagonismos.</p>
+                </li>
+            </ul>
+        </div>
+        
+        <h2 class="section-title">Conclusión del Análisis de Comunicación</h2>
+        <div class="card" style="background-color: #d4edda; border: 1px solid #c3e6cb;">
+            <p>La marca es icónica y altamente conversada, pero opera en un terreno polarizado donde el precio/valor, la consistencia del sabor, los medios de pago y la experiencia operativa generan fricción.</p>
+            <p><strong>Prioridades Tácticas:</strong> 1) habilitar pagos con tarjeta/QR, 2) recalibrar y estandarizar recetas, 3) ajustar la propuesta de valor (porciones, combos y políticas de delivery/ají), 4) fortalecer el discurso de inclusión y emprendimiento con respuestas empáticas y 5) capitalizar la viralidad con activaciones y ofertas por canal.</p>
+        </div>
+
+    </div>
+</body>
+</html>
