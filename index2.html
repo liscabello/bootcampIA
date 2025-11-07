@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Ejecutivo | Análisis de Crisis en Redes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* Estilo Corporativo Moderno */
+        :root {
+            --primary-color: #007bff; /* Azul corporativo */
+            --secondary-color: #6c757d; /* Gris */
+            --accent-color: #28a745; /* Verde para éxito/positivo */
+            --background-light: #f8f9fa;
+            --card-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background-color: var(--background-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #343a40;
+        }
+
+        .navbar-custom {
+            background-color: var(--primary-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .card-custom:hover {
+            transform: translateY(-3px);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .header-section {
+            background-color: #ffffff;
+            padding: 20px 0;
+            border-bottom: 3px solid var(--primary-color);
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Estilo de la tabla Heatmap */
+        #heatmap-table th, #heatmap-table td {
+            text-align: center;
+            padding: 0.5rem;
+            min-width: 60px;
+            font-size: 0.85rem;
+        }
+
+        .heatmap-day {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        .heatmap-hour {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        
+        /* Colores de gradiente (0 a 100% de la actividad máxima) */
+        .color-0 { background-color: #e9ecef; color: #6c757d; } /* Casi nulo/nulo */
+        .color-1 { background-color: #c9e0f6; } /* Baja */
+        .color-2 { background-color: #8bb7e2; } /* Media */
+        .color-3 { background-color: #4f8fd5; color: white; } /* Alta */
+        .color-4 { background-color: #007bff; color: white; font-weight: bold; } /* Muy Alta */
+        .color-peak { background-color: #dc3545; color: white; font-weight: bold; } /* PEAK Máximo */
+        
+        .topic-card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .tweet-item {
+            border-left: 5px solid var(--accent-color);
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+        .tweet-engagement {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="header-section">
+        <div class="container">
+            <h1 class="text-primary fw-bold"><i class="bi bi-graph-up-arrow"></i> Dashboard Ejecutivo de Crisis</h1>
+            <p class="lead text-secondary">Restaurante de Bolones de Guayaquil | Análisis de Sentimiento en Twitter</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section id="general-metrics" class="mb-5">
+            <h2 class="mb-4 text-primary"><i class="bi bi-speedometer2"></i> 1. Impacto General y Métricas Clave</h2>
+            
+            <div class="row" id="summary-metrics-row">
+                </div>
+
+            <div class="row mt-4">
+                <div class="col-lg-12">
+                    <div class="card card-custom">
+                        <div class="card-header bg-light text-primary fw-bold">
+                            <i class="bi bi-link-45deg"></i> Matriz de Correlaciones Relevantes
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Relación</th>
+                                        <th>Coeficiente de Correlación (r)</th>
+                                        <th>Implicación Estratégica</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="corr-table-body">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="temporal-patterns" class="mb-5">
+            <h2 class="mb-4 text-primary"><i class="bi bi-calendar-check"></i> 2. Patrones Temporales de Interacción (Likes)</h2>
+            <div class="card card-custom">
+                <div class="card-header bg-light text-primary fw-bold">
+                    Mapa de Calor: Concentración de "Me Gusta" por Día y Hora
+                </div>
+                <div class="card-body">
+                    <p class="text-secondary">Los colores más intensos indican las horas y días de mayor actividad, **momentos óptimos para la comunicación y respuesta**. (Escala de 0 a 2734 Me Gusta).</p>
+                    <div class="table-responsive">
+                        <table id="heatmap-table" class="table table-bordered table-sm">
+                            </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="topics-section" class="mb-5">
+            <h2 class="mb-4 text-primary"><i class="bi bi-card-checklist"></i> 3. Temáticas Centrales y Desafíos Estratégicos</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4" id="topics-container">
+                </div>
+        </section>
+
+        <section id="viral-tweets-section" class="mb-5">
+            <h2 class="mb-4 text-primary"><i class="bi bi-twitter-x"></i> 4. Tweets con Mayor Interacción</h2>
+            <div class="card card-custom">
+                <div class="card-header bg-light text-primary fw-bold">
+                    Top 10 Tweets con mayor Engagement (Me Gusta + Retweets)
+                </div>
+                <ul class="list-group list-group-flush" id="top-tweets-list">
+                    </ul>
+            </div>
+        </section>
+        
+        <section id="conclusion-section" class="mb-5">
+            <h2 class="mb-4 text-primary"><i class="bi bi-lightbulb"></i> 5. Conclusión Ejecutiva</h2>
+            <div class="card card-custom p-4 bg-primary text-white">
+                <blockquote class="blockquote mb-0">
+                    <p id="conclusion-text" class="mb-0 fs-5">...</p>
+                    <footer class="blockquote-footer text-white mt-2">Recomendación Estratégica</footer>
+                </blockquote>
+            </div>
+        </section>
+        
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p class="mb-0">Agencia de Publicidad y Comunicación Integral Corporativa &copy; 2025</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // 1. DATA EXTRAÍDA DEL JSON
+        const rawData = {
+            "describe_matrix": {
+                "count": {
+                    "favorite_count": 1198.0,
+                    "id": 1199.0,
+                    "retweet_count": 1198.0,
+                    "user.followers_count": 1198.0,
+                    "user.friends_count": 1198.0
+                },
+                "mean": {
+                    "favorite_count": 12.202003338898164,
+                    "id": 1.1909482828284088e+18,
+                    "retweet_count": 33.925709515859765,
+                    "user.followers_count": 5046.368948247078,
+                    "user.friends_count": 1021.626878130217
+                },
+                "std": {
+                    "favorite_count": 104.53245995361105,
+                    "id": 3.4425044120617452e+16,
+                    "retweet_count": 815.0630495614117,
+                    "user.followers_count": 72793.23507864912,
+                    "user.friends_count": 6446.56499792927
+                },
+                "min": {
+                    "favorite_count": 0.0,
+                    "id": 167.0,
+                    "retweet_count": 0.0,
+                    "user.followers_count": 1.0,
+                    "user.friends_count": 0.0
+                },
+                "25%": {
+                    "favorite_count": 0.0,
+                    "id": 1.1918218393786122e+18,
+                    "retweet_count": 0.0,
+                    "user.followers_count": 186.5,
+                    "user.friends_count": 262.0
+                },
+                "50%": {
+                    "favorite_count": 0.0,
+                    "id": 1.191929775016874e+18,
+                    "retweet_count": 0.0,
+                    "user.followers_count": 483.0,
+                    "user.friends_count": 532.5
+                },
+                "75%": {
+                    "favorite_count": 2.0,
+                    "id": 1.192133212113404e+18,
+                    "retweet_count": 1.0,
+                    "user.followers_count": 1377.25,
+                    "user.friends_count": 992.75
+                },
+                "max": {
+                    "favorite_count": 2733.0,
+                    "id": 1.192608404327547e+18,
+                    "retweet_count": 28090.0,
+                    "user.followers_count": 1997889.0,
+                    "user.friends_count": 221536.0
+                }
+            },
+            "corr_matrix": {
+                "user.followers_count": {
+                    "user.followers_count": 1.0,
+                    "user.friends_count": 0.5770596319321523,
+                    "id": -0.14474055631145605,
+                    "favorite_count": 0.3743598815158741,
+                    "retweet_count": 0.1283469079000893
+                },
+                "user.friends_count": {
+                    "user.followers_count": 0.5770596319321523,
+                    "user.friends_count": 1.0,
+                    "id": -0.09306009552025668,
+                    "favorite_count": 0.16383723344715007,
+                    "retweet_count": 0.05420889555106655
+                },
+                "id": {
+                    "user.followers_count": -0.14474055631145605,
+                    "user.friends_count": -0.09306009552025668,
+                    "id": 1.0,
+                    "favorite_count": -0.1278758415977603,
+                    "retweet_count": 0.07590999064439975
+                },
+                "favorite_count": {
+                    "user.followers_count": 0.3743598815158741,
+                    "user.friends_count": 0.16383723344715007,
+                    "id": -0.1278758415977603,
+                    "favorite_count": 1.0,
+                    "retweet_count": 0.1210178774154952
+                },
+                "retweet_count": {
+                    "user.followers_count": 0.1283469079000893,
+                    "user.friends_count": 0.05420889555106655,
+                    "id": 0.07590999064439975,
+                    "favorite_count": 0.1210178774154952,
+                    "retweet_count": 1.0
+                }
+            },
+            "engagement_matrix": {
+                "text": {
+                    "33": "@Cesar_Antonio_F @LivePalestina @Jou_Kaiser @tere_marinovic @elvillegaschile @sergioulloa1 @German69738375… https://t.co/0mgrQNJVrU",
+                    "3276": "@dearc26 @eluniversocom Q insoportable estas personas resentidas. Viven amargados! Hay gustos y gustos. El bolón de Tere es rico!",
+                    "3738": "Se acabó el chisme con el #closetdedav y ahora leo twists del #cafedetere... qué tiro guayaquileños todo bien en casa?",
+                    "2198": "@KaritoSoBsc Oe oe oe bien recuerdo que una vez twitteaste qué más barato Te salía comprar un departamento en salin… https://t.co/FL0MGZv9Hx",
+                    "1951": "La señora del café d Tere es la prueba de q trabajando duro se puede llegar a rico. Ella ha demostrado q no es nece… https://t.co/JMNbFy5KLS",
+                    "3608": "Cuando trabajaba en el parque Colón una vez quise ir al #cafedetere que hay ahí vi los precios y me parecieron dema… https://t.co/LP8o8NIHU6",
+                    "3992": "@ornella_soriano @_SantinoBoy @CafedeTere Que comentario tan regionalista... cabeza hueca que piensa que en la sier… https://t.co/cWBukqR7EM",
+                    "3457": "@tere_marinovic En esta crisis, no hay buenos ni malos, se enfrentan entre chilenos, padres y familias. Y todo este… https://t.co/CQsnaeEs8Z",
+                    "2148": "Si el cafe de tere te parece que es caro, turro y puro mkt anda busca otro bolon chtm\nEl ecuatoriano próspero tiene… https://t.co/APCz649NbZ",
+                    "932": "Soy cliente regular del Café de Tere. Ahora bien, que siga sin aceptar tarjetas de crédito es indefendible. Doña Te… https://t.co/jHdbRXcdfa"
+                },
+                "favorite_count": {
+                    "33": 10.0,
+                    "3276": 79.0,
+                    "3738": 10.0,
+                    "2198": 46.0,
+                    "1951": 332.0,
+                    "3608": 1.0,
+                    "3992": 1.0,
+                    "3457": 7.0,
+                    "2148": 187.0,
+                    "932": 130.0
+                },
+                "retweet_count": {
+                    "33": 1.0,
+                    "3276": 1.0,
+                    "3738": 3.0,
+                    "2198": 3.0,
+                    "1951": 81.0,
+                    "3608": 0.0,
+                    "3992": 0.0,
+                    "3457": 3.0,
+                    "2148": 63.0,
+                    "932": 35.0
+                },
+                "total_engagement": {
+                    "33": 250.0,
+                    "3276": 86.81318681318682,
+                    "3738": 66.66666666666666,
+                    "2198": 63.888888888888886,
+                    "1951": 61.141804788213626,
+                    "3608": 33.33333333333333,
+                    "3992": 33.33333333333333,
+                    "3457": 19.444444444444446,
+                    "2148": 15.583333333333332,
+                    "932": 13.30603889457523
+                }
+            },
+            "heatmap": {
+                "Monday": {
+                    "0.0": -1.0, "1.0": 0.0, "2.0": -1.0, "3.0": 0.0, "4.0": -1.0, "5.0": -1.0, "6.0": -1.0, "7.0": 0.0, "8.0": -1.0, "9.0": 0.0, "10.0": -1.0, "11.0": 0.0, "12.0": -1.0, "13.0": -1.0, "14.0": 1.0, "15.0": 1.0, "16.0": 3.0, "17.0": 177.0, "18.0": -1.0, "19.0": -1.0, "20.0": -1.0, "21.0": -1.0, "22.0": 2734.0, "23.0": 82.0
+                },
+                "Tuesday": {
+                    "0.0": 1.0, "1.0": 32.0, "2.0": 20.0, "3.0": 0.0, "4.0": 3.0, "5.0": -1.0, "6.0": -1.0, "7.0": 1.0, "8.0": -1.0, "9.0": 0.0, "10.0": -1.0, "11.0": 1.0, "12.0": 3.0, "13.0": 73.0, "14.0": 195.0, "15.0": 18.0, "16.0": 175.0, "17.0": 102.0, "18.0": 1012.0, "19.0": 651.0, "20.0": 210.0, "21.0": 412.0, "22.0": 1555.0, "23.0": 1331.0
+                },
+                "Wednesday": {
+                    "0.0": 209.0, "1.0": 906.0, "2.0": 1789.0, "3.0": 895.0, "4.0": 265.0, "5.0": 37.0, "6.0": 27.0, "7.0": 31.0, "8.0": 37.0, "9.0": 4.0, "10.0": 12.0, "11.0": 64.0, "12.0": 46.0, "13.0": 115.0, "14.0": 98.0, "15.0": 76.0, "16.0": 36.0, "17.0": 160.0, "18.0": 24.0, "19.0": 34.0, "20.0": 22.0, "21.0": 282.0, "22.0": 65.0, "23.0": 83.0
+                },
+                "Thursday": {
+                    "0.0": 37.0, "1.0": 104.0, "2.0": 40.0, "3.0": 10.0, "4.0": 15.0, "5.0": 8.0, "6.0": 0.0, "7.0": 0.0, "8.0": -1.0, "9.0": 0.0, "10.0": 0.0, "11.0": 1.0, "12.0": 17.0, "13.0": 5.0, "14.0": 1.0, "15.0": 3.0, "16.0": 57.0, "17.0": 29.0, "18.0": 10.0, "19.0": 1.0, "20.0": 16.0, "21.0": 1.0, "22.0": 1.0, "23.0": 100.0
+                },
+                "Friday": {
+                    "0.0": 5.0, "1.0": 0.0, "2.0": -1.0, "3.0": -1.0, "4.0": -1.0, "5.0": -1.0, "6.0": -1.0, "7.0": -1.0, "8.0": -1.0, "9.0": -1.0, "10.0": -1.0, "11.0": -1.0, "12.0": -1.0, "13.0": -1.0, "14.0": 8.0, "15.0": -1.0, "16.0": -1.0, "17.0": -1.0, "18.0": -1.0, "19.0": -1.0, "20.0": -1.0, "21.0": -1.0, "22.0": -1.0, "23.0": -1.0
+                },
+                "Saturday": {
+                    "0.0": 5.0, "1.0": -1.0, "2.0": -1.0, "3.0": -1.0, "4.0": -1.0, "5.0": -1.0, "6.0": -1.0, "7.0": -1.0, "8.0": -1.0, "9.0": -1.0, "10.0": 11.0, "11.0": -1.0, "12.0": -1.0, "13.0": 0.0, "14.0": 0.0, "15.0": 5.0, "16.0": 2.0, "17.0": 8.0, "18.0": -1.0, "19.0": -1.0, "20.0": -1.0, "21.0": 0.0, "22.0": -1.0, "23.0": -1.0
+                },
+                "Sunday": {
+                    "0.0": -1.0, "1.0": 0.0, "2.0": -1.0, "3.0": -1.0, "4.0": -1.0, "5.0": -1.0, "6.0": -1.0, "7.0": -1.0, "8.0": -1.0, "9.0": -1.0, "10.0": -1.0, "11.0": -1.0, "12.0": -1.0, "13.0": 7.0, "14.0": -1.0, "15.0": 0.0, "16.0": 0.0, "17.0": -1.0, "18.0": 1.0, "19.0": -1.0, "20.0": -1.0, "21.0": -1.0, "22.0": 0.0, "23.0": -1.0
+                }
+            },
+            "topics": {
+                "topics": [
+                    { "title": "Precio percibido alto y \u201csobrevalorado\u201d", "detail": "Muchos usuarios consideran que el bol\u00f3n/tigrillo es caro para lo que reciben; otros defienden que el precio incluye limpieza, ambiente, ubicaci\u00f3n y servicio.", "challenge": "Revisar ingenier\u00eda de men\u00fas y porciones; crear combos de entrada, opciones \u201cvalue\u201d, y precios ancla. Comunicar claramente la propuesta de valor y lo que incluye el precio sin entrar en confrontaciones." },
+                    { "title": "M\u00e9todos de pago limitados (no aceptan tarjeta)", "detail": "La no aceptaci\u00f3n de tarjetas/datafast y preferencia por efectivo genera fuerte fricci\u00f3n e imagen de marca desactualizada.", "challenge": "Implementar POS, pagos con tarjeta, d\u00e9bito, QR, billeteras y links de pago. Comunicar el cambio y ofrecer incentivos de adopci\u00f3n (cashback, promo lanzamiento)." },
+                    { "title": "Consistencia y calidad del producto", "detail": "Opiniones divididas sobre bol\u00f3n/tigrillo: \u201cseco\u201d, \u201cfr\u00edo\u201d, \u201csopudo\u201d, exceso de l\u00e1cteos, sabor a margarina, p\u00e9rdida del \u201csabor criollo\u201d por industrializaci\u00f3n.", "challenge": "Auditor\u00edas sensoriales por local, estandarizaci\u00f3n de recetas y t\u00e9cnicas, control de temperatura y tiempos, grasas e insumos. Programa de mejora continua con pruebas A/B y paneles de clientes." },
+                    { "title": "Relaci\u00f3n porci\u00f3n\u2013precio y extras", "detail": "Tama\u00f1o percibido como peque\u00f1o para el precio; cargos por extras (p. ej., huevo a $1) y bebidas \u201ccaras\u201d afectan la percepci\u00f3n de valor.", "challenge": "Redise\u00f1ar porciones/acompa\u00f1antes, empaquetar extras en combos, revisar pricing de bebidas; agregar \u201cporci\u00f3n grande\u201d y \u201cecon\u00f3mica\u201d para diferentes bolsillos." },
+                    { "title": "Reputaci\u00f3n y polarizaci\u00f3n en redes", "detail": "La marca divide \u201clovers vs. haters\u201d y concentra debates de clase; cualquier menci\u00f3n se vuelve tendencia y amplifica cr\u00edticas/apoyos.", "challenge": "Plan de social listening y manejo de crisis, gu\u00eda de tono, respuesta emp\u00e1tica y basada en datos; activar embajadores, UGC y storytelling de impacto (empleo, proveedores) para despolarizar." }
+                ],
+                "conclusion": "La conversaci\u00f3n evidencia una marca muy posicionada pero polarizante, con fricciones t\u00e1cticas (pagos, delivery, pricing de extras) y estrat\u00e9gicas (consistencia de producto, autenticidad al escalar). Priorizar pagos digitales, refinamiento del men\u00fa/porciones, control sensorial por local y una estrategia de reputaci\u00f3n proactiva reducir\u00e1 el ruido y aumentar\u00e1 conversi\u00f3n y lealtad. Hay espacio para crecer fuera de GYE y capitalizar el aj\u00ed/recetas emblem\u00e1ticas como activos diferenciales."
+            },
+            "filtered_df_shape": [ 776, 21 ]
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSummaryMetrics(rawData.describe_matrix, rawData.filtered_df_shape[0]);
+            renderCorrelations(rawData.corr_matrix);
+            renderHeatmap(rawData.heatmap, rawData.describe_matrix.max.favorite_count);
+            renderTopics(rawData.topics.topics);
+            renderTopTweets(rawData.engagement_matrix);
+            renderConclusion(rawData.topics.conclusion);
+        });
+
+        // 2. FUNCIÓN PARA MÉTRICAS RESUMEN
+        function renderSummaryMetrics(describe, totalTweets) {
+            const container = document.getElementById('summary-metrics-row');
+            
+            const metrics = [
+                { title: "Tweets Analizados", icon: "twitter-x", value: totalTweets.toLocaleString(), color: 'var(--primary-color)' },
+                { title: "Avg. Me Gusta", icon: "heart-fill", value: describe.mean.favorite_count.toFixed(2), color: '#dc3545' },
+                { title: "Max. Me Gusta", icon: "star-fill", value: describe.max.favorite_count.toLocaleString(), color: '#ffc107' },
+                { title: "Avg. Retweets", icon: "repeat", value: describe.mean.retweet_count.toFixed(2), color: 'var(--accent-color)' },
+            ];
+
+            metrics.forEach(m => {
+                const col = document.createElement('div');
+                col.className = 'col-lg-3 col-md-6 mb-4';
+                col.innerHTML = `
+                    <div class="card card-custom metric-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <i class="bi ${m.icon} fs-3 me-3" style="color: ${m.color};"></i>
+                                <div>
+                                    <h5 class="card-title text-secondary mb-0">${m.title}</h5>
+                                    <p class="card-text fs-4 fw-bold mb-0" style="color: ${m.color};">${m.value}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(col);
+            });
+        }
+
+        // 3. FUNCIÓN PARA CORRELACIONES
+        function renderCorrelations(corr) {
+            const tbody = document.getElementById('corr-table-body');
+            tbody.innerHTML = '';
+            
+            const correlations = [
+                { p1: 'Seguidores', p2: 'Me Gusta', r: corr["user.followers_count"]["favorite_count"], implication: "Una correlación positiva moderada-fuerte indica que las cuentas con **más seguidores** tienden a generar tweets con un **mayor número de 'Me Gusta'**." },
+                { p1: 'Seguidores', p2: 'Amigos', r: corr["user.followers_count"]["user.friends_count"], implication: "Correlación fuerte: las cuentas con muchos seguidores también siguen a un número elevado de cuentas, indicando una red social activa." },
+                { p1: 'Me Gusta', p2: 'Retweets', r: corr["favorite_count"]["retweet_count"], implication: "Correlación positiva, pero débil, sugiriendo que la relación entre un 'Me Gusta' y un 'Retweet' no es automática para este tema." },
+            ];
+
+            correlations.forEach(c => {
+                const tr = document.createElement('tr');
+                const r_value = parseFloat(c.r).toFixed(3);
+                const r_color = r_value >= 0.3 ? 'text-success' : r_value < 0 ? 'text-danger' : 'text-warning';
+                
+                tr.innerHTML = `
+                    <td>${c.p1} vs. ${c.p2}</td>
+                    <td class="fw-bold ${r_color}">${r_value}</td>
+                    <td>${c.implication}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 4. FUNCIÓN PARA HEATMAP
+        function renderHeatmap(heatmapData, maxLikes) {
+            const table = document.getElementById('heatmap-table');
+            const days = Object.keys(heatmapData);
+            const hours = Object.keys(heatmapData[days[0]]).map(h => parseInt(h)).sort((a, b) => a - b);
+            let html = '<thead><tr><th class="heatmap-hour">Día/Hora</th>';
+            
+            // Header (Horas)
+            hours.forEach(h => {
+                html += `<th class="heatmap-hour">${h.toString().padStart(2, '0')}:00</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Body (Días y Valores)
+            days.forEach(day => {
+                html += `<tr><td class="heatmap-day">${day}</td>`;
+                hours.forEach(hour => {
+                    const likes = heatmapData[day][`${hour}.0`];
+                    const percentage = likes > 0 ? (likes / maxLikes) * 100 : 0;
+                    let className = 'color-0';
+                    let cellContent = likes > 0 ? likes.toLocaleString() : '';
+
+                    if (likes === maxLikes) {
+                         className = 'color-peak';
+                    } else if (percentage > 70) {
+                        className = 'color-4';
+                    } else if (percentage > 40) {
+                        className = 'color-3';
+                    } else if (percentage > 10) {
+                        className = 'color-2';
+                    } else if (percentage > 0) {
+                        className = 'color-1';
+                    }
+
+                    if (likes === -1.0) {
+                        className = 'color-0';
+                        cellContent = '-';
+                    }
+
+                    html += `<td class="${className}">${cellContent}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        // 5. FUNCIÓN PARA TEMÁTICAS
+        function renderTopics(topics) {
+            const container = document.getElementById('topics-container');
+            container.innerHTML = '';
+            
+            topics.forEach(topic => {
+                const col = document.createElement('div');
+                col.className = 'col';
+                col.innerHTML = `
+                    <div class="card card-custom h-100">
+                        <div class="topic-card-header p-3">
+                            <h5 class="mb-0 fw-bold"><i class="bi bi-tag-fill me-2"></i>${topic.title}</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6><i class="bi bi-chat-square-text-fill text-secondary me-1"></i> Percepción:</h6>
+                            <p class="card-text">${topic.detail}</p>
+                            <h6><i class="bi bi-tools text-primary me-1"></i> Desafío/Acción:</h6>
+                            <p class="card-text small">${topic.challenge}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(col);
+            });
+        }
+
+        // 6. FUNCIÓN PARA TOP TWEETS
+        function renderTopTweets(engagement) {
+            const ul = document.getElementById('top-tweets-list');
+            ul.innerHTML = '';
+
+            // Combinar y ordenar los datos por total_engagement de mayor a menor
+            const tweetData = Object.keys(engagement.text).map(key => ({
+                id: key,
+                text: engagement.text[key],
+                likes: engagement.favorite_count[key],
+                retweets: engagement.retweet_count[key],
+                total: engagement.total_engagement[key]
+            })).sort((a, b) => b.total - a.total).slice(0, 10); // Top 10
+
+            tweetData.forEach((tweet, index) => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item tweet-item';
+                li.innerHTML = `
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1 text-primary fw-bold">#${index + 1} | Engagement: ${tweet.total.toFixed(2)}</h6>
+                        <small class="text-secondary">ID: ${tweet.id}</small>
+                    </div>
+                    <p class="mb-1">${tweet.text}</p>
+                    <div class="tweet-engagement">
+                        <span class="badge bg-danger"><i class="bi bi-heart-fill me-1"></i> ${tweet.likes.toLocaleString()} Me Gusta</span>
+                        <span class="badge bg-info"><i class="bi bi-repeat me-1"></i> ${tweet.retweets.toLocaleString()} Retweets</span>
+                    </div>
+                `;
+                ul.appendChild(li);
+            });
+        }
+        
+        // 7. FUNCIÓN PARA CONCLUSIÓN
+        function renderConclusion(conclusion) {
+            document.getElementById('conclusion-text').innerHTML = conclusion;
+        }
+
+    </script>
+</body>
+</html>
